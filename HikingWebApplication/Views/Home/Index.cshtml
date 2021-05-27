@@ -1,0 +1,286 @@
+﻿@using Microsoft.AspNetCore.Identity
+@model SearchViewModel
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Home Page";
+}
+@section Heads{
+    <link rel="stylesheet" href="~/css/index.css">
+    <link rel="stylesheet" href="~/css/slider.css">
+}
+<div class="search-container">
+    <!--Container-->
+
+    <a href="javascript:void(0)" class="open-btn" onclick="sideNavOpen()"><i class="fa fa-search fa-2x"></i></a>
+
+    @{
+        if (SignInManager.IsSignedIn(User))
+        {
+            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button style="background:gray; width:80px" class="login-register-button" href="#">Logout</button>
+            </form>
+
+            <button style="margin-right:110px; background:blue" class="login-register-button" href="#">Hello @User.Identity.Name !</button>
+            <a asp-action="EditProfile"><button style="margin-right:310px;width:100px" class="login-register-button" href="#">Edit Profile</button></a>
+            <a asp-action="AddRoute" asp-controller="Route"><button style="margin-right:420px;width:100px" class="login-register-button" href="#">Add Route</button></a>
+        }
+        else
+        {
+            <a asp-area="Identity" asp-page="/Account/Login"><button class="login-register-button" href="#">Login / Register</button></a>
+            <a asp-action="AddRoute" asp-controller="Route"><button style="margin-right:250px" class="login-register-button" href="#">Add Route</button></a>
+        }
+    }
+
+
+
+    @*<partial name="_LoginPartial" />*@
+    <!-------Left Pane Start------>
+    <div class="side-nav backdrop-blur">
+        <div class="backdropblur">
+            <div class="nav-logo">
+
+                <p>Logo</p>
+                <a href="javascript:void(0)" class="close-btn" onclick="sideNavClose()"><i class="fa fa-times fa-2x"></i></a>
+
+            </div>
+            <form>
+                <input type="text" placeholder="Seach Location" asp-for="Location" class="search-icon backdrop-blur">
+                <input type="text" placeholder="People Participate" asp-for="People" class="backdrop-blur">
+                @*<input type="text" placeholder="Route Difficulty" id="route-difficulty" name="route-difficulty" class="backdrop-blur">*@
+                @*<input type="text" placeholder="Days Spend" id="days-spend" name="days-spend" class="backdrop-blur">*@
+                <div class="D-L-T">
+                    <div class="sec1">
+                        <label for="full-name">Difficulty</label>
+                        <select asp-for="DificultyLevel" class="backdrop-blur" asp-items="Html.GetEnumSelectList<Enums.DificultyLevel>()">
+                            <option value="0" selected="selected">All</option>
+                        </select>
+
+                    </div>
+
+                    <div class="sec3">
+                        <label for="full-name">Duration</label>
+                        <select asp-for="EstimateTime" class="backdrop-blur" asp-items="Html.GetEnumSelectList<Enums.EstimateTime>()"> <option value="0" selected="selected">All</option></select>
+
+                    </div>
+                </div>
+                <div class="D-L-T">
+                    <div class="sec1">
+                        <label for="full-name">Budget</label>
+                        <select asp-for="Budget" class="backdrop-blur" asp-items="Html.GetEnumSelectList<Enums.Budget>()"> <option value="0" selected="selected">All</option></select>
+
+                    </div>
+
+                    <div class="sec3">
+                        <label for="full-name">Evevation</label>
+                        <select asp-for="Evevation" class="backdrop-blur" asp-items="Html.GetEnumSelectList<Enums.Evevation>()"> <option value="0" selected="selected">All</option></select>
+
+                    </div>
+                </div>
+                <div class="form-group">
+                    <input id="IncludeExpert" type="checkbox" />
+                    <label for="IncludeExpert">Include mountain expert</label><br />
+                </div>
+
+                <button id="btnSearch" type="button" class="search-button">Search</button>
+                <div>
+                    <!---card start-->
+
+
+                </div><!--card carousel end-->
+            </form>
+
+        </div><!---Left Pane End--->
+    </div>
+
+    <div class="map_area">
+        <div id="map">
+        </div>
+
+        <!----Coordinates Input Start-->
+        <!--<div class="coordinates-input backdrop-blur">
+            <form action="#">
+                <div class="input-group">
+                    <label for="latitude">Latitude</label>
+                    <input type="text" name="latitude" id="latitude" placeholder="Latitude" class="backdrop-blur">
+                </div>
+                <div class="input-group">
+                    <label for="longitude">Longitude</label>
+                    <input type="text" placeholder="Longitude" id="longitude" name="longitude" class="backdrop-blur">
+                </div>
+                <div class="input-group">
+                    <label for="elevation">Elevation</label>
+                    <input type="text" placeholder="Elevation" id="elevation" name="elevation" class="backdrop-blur">
+                </div>
+            </form>
+        </div>-->
+        <!----Coordinate Input End-->
+    </div>
+
+
+</div><!---Container End-->
+
+<div class="uk-margin"></div>
+<div id="routesResult">
+
+</div>
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+
+    <div class="modal-content">
+        <span class="close">&times;</span>
+
+        <div class="map-container">
+            <div class="left-container">
+                <img src="./images/slider5_placeholder.jpg" style="width: 100%;">
+            </div>
+
+            <div class="right-container">
+                <h1 id="modelTitle"></h1>
+                <p>lat: <span id="modelLat"> </span></p>
+                <p>lng: <span id="modelLng"> </span></p>
+            </div>
+            <hr>
+
+        </div>
+    </div>
+</div>
+@section Scripts{
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLIff_I2Tc78JZDy1tMVIyU_0prbBj4nY&libraries=places&callback=initMap"
+            async></script>
+    <script src="~/js/slider.js"></script>
+    <script>
+        $(document).ready(function () {
+            LoadRoutes({
+                location: '',
+                people: '',
+                difficulty: 0,
+                estimate: 0,
+                budget: 0,
+                elevation: 0,
+                needExpert: false
+            });
+        });
+
+        function LoadRoutes(searchObj) {
+            $.ajax({
+                type: 'POST',
+                url: "/Home/LoadRoutesPartial",
+                data: { 'searchData': searchObj },
+                success: function (result) {
+                    $('#routesResult').html(result);
+                }
+            });
+        }
+
+        /////////////////////// Map code
+        function initMap() {
+            var locations = [];
+            $.ajax({
+                type: 'GET',
+                url: "/Home/GetLocations",
+                success: function (result) {
+                    locations = result;
+
+                    const map = new google.maps.Map(document.getElementById("map"), {
+                        zoom: 4,
+                        center: locations[0],
+                    });
+
+                    locations.map((element) => {
+                        const marker1 = new google.maps.Marker({
+                            position: element,
+                            map,
+                            // title: "Title",
+                        });
+
+                        marker1.addListener("click", (data) => {
+                            map.setZoom(8);
+                            map.setCenter(marker1.getPosition());
+                            getData(data);
+                        });
+                    })
+
+                }
+            });
+
+            const getData = (data) => {
+                $.get(
+                    "https://nominatim.openstreetmap.org/reverse?format=json&lat=" +
+                    data.latLng.lat() +
+                    "&lon=" +
+                    data.latLng.lng()
+                ).done(function (data) {
+                    document.querySelector("#modelLng").innerHTML = data.lon;
+                    document.querySelector("#modelLat").innerHTML = data.lat;
+
+                    let road = () => {
+                        if (data.address.road) {
+                            return data.address.road + ",";
+                        } else {
+                            return "";
+                        }
+                    };
+                    let postcode = () => {
+                        if (data.address.postcode) {
+                            return data.address.postcode + ",";
+                        } else {
+                            return "";
+                        }
+                    };
+                    let city = () => {
+                        if (data.address.city) {
+                            return data.address.city + ",";
+                        } else {
+                            return "";
+                        }
+                    };
+
+                    let country = () => {
+                        if (data.address.country) {
+                            return data.address.country;
+                        } else {
+                            return "";
+                        }
+                    };
+                    let modelTitle = `${road()} ${postcode()} ${city()} ${country()}`;
+                    document.getElementById("modelTitle").innerHTML = modelTitle;
+                    modal.style.display = "block";
+                });
+            };
+
+            $(".close").click(function () {
+                modal.style.display = "none";
+            })
+        }
+
+
+        $("#btnSearch").click(function () {
+
+            var location = $("#Location").val();
+            var people = $("#People").val();
+            var difficulty = $("#DificultyLevel").val();
+            var estimate = $("#EstimateTime").val();
+            var budget = $("#Budget").val();
+            var elevation = $("#Evevation").val();
+            var needExpert = $('#IncludeExpert').prop('checked');
+            console.log(difficulty);
+            LoadRoutes({
+                location: location,
+                people: people,
+                difficulty: difficulty,
+                estimate: estimate,
+                budget: budget,
+                elevation: elevation,
+                needExpert: needExpert
+            });
+
+        });
+
+
+
+    </script>
+}
+

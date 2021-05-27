@@ -1,0 +1,56 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+@section Heads{
+    <link rel="stylesheet" href="~/css/register.css">
+    <style>
+        .text-danger{
+            color:white;
+        }
+    </style>
+}
+<div class="register-container">
+    <div class="register-form-card backdrop-blur">
+        <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <h1 class="heading">Register</h1>
+            <div asp-validation-summary="All" class="text-danger"></div>
+
+            <label asp-for="Input.FullName">Full Name</label>
+            <input asp-for="Input.FullName" placeholder="Full Name" class="backdrop-blur" required>
+            <span asp-validation-for="Input.FullName" class="text-danger"></span>
+
+            <label asp-for="Input.Email">Email</label>
+            <input asp-for="Input.Email" placeholder="Email" class="backdrop-blur" required>
+            <span asp-validation-for="Input.Email" class="text-danger"></span>
+
+            <label asp-for="Input.Country"></label>
+            <input asp-for="Input.Country" placeholder="Country" class="backdrop-blur" required>
+            <span asp-validation-for="Input.Country" class="text-danger"></span>
+
+            <label asp-for="Input.State"></label>
+            <input asp-for="Input.State" placeholder="State" class="backdrop-blur" required>
+            <span asp-validation-for="Input.State" class="text-danger"></span>
+
+            <label asp-for="Input.Password">Password</label>
+            <input asp-for="Input.Password" placeholder="Password" class="backdrop-blur" required>
+            <span asp-validation-for="Input.Password" class="text-danger"></span>
+
+            <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+            <input asp-for="Input.ConfirmPassword" placeholder="Confirm Password" class="backdrop-blur" required>
+            <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+
+            <div class="form-button-with-text-link">
+                <button type="submit">Register</button>
+                <p>Already have an account? <span><a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Login</a></span></p>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

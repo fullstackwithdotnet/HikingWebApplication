@@ -1,0 +1,179 @@
+﻿@model RouteViewModel
+@{
+    ViewData["Title"] = "Add Route";
+}
+
+@section Heads{
+    <link rel="stylesheet" href="~/css/review.css" />
+    <link rel="stylesheet" href="~/css/style.css" />
+    <link rel="stylesheet" href="~/css/star.css" />
+}
+
+<div class="review-container">
+    <partial name="_LoginPartial" model="Model.CreatedBy" />
+
+    <div class="upload-photo">
+        <div class="upload-photo-card backdrop-blur">
+            <div class="map-wrap">
+                <div class="Map-area">
+                    Location:
+                    <input type="text" id="start" class="backdrop-blur" />
+
+                </div>
+            </div>
+            <div class="map">
+                <div id="maps"></div>
+            </div>
+            <form enctype="multipart/form-data" asp-action="AddRoute" asp-controller="Route" method="post">
+                <div class="form-group">
+                    <label for="full-name">Title</label>
+                    <input asp-for="Title" type="text" class="form-control" required/>
+                </div>
+                <div class="form-group">
+                    <label for="full-name">Name of the place</label>
+                    <input asp-for="Place" type="text" class="form-control" required/>
+                </div>
+
+                <div class="form-group">
+                    <label for="full-name">Latitude</label>
+                    <input asp-for="Latitude" class="form-control" required readonly />
+                </div>
+
+
+                <div class="form-group">
+                    <label for="full-name">Lontitude</label>
+                    <input asp-for="Longitude" class="form-control" required readonly/>
+                </div>
+
+                <div class="form-group">
+                    <label for="full-name">Elevation</label>
+                    <input asp-for="Elevation" class="form-control" required/>
+                </div>
+                <div class="form-group">
+                    <label for="full-name">Distance (km)</label>
+                    <input asp-for="Distance" class="form-control" required/>
+                </div>
+               
+                <div class="D-L-T">
+                    <div class="sec1">
+                        <label for="full-name">Difficulty</label>
+                        <select asp-for="DificultyLevel" class="backdrop-blur" asp-items="Html.GetEnumSelectList<Enums.DificultyLevel>()"></select>
+                    </div>
+                    <div class="sec1">
+                        <label for="full-name">Budget ($)</label>
+                        <select asp-for="Budget" class="backdrop-blur" asp-items="Html.GetEnumSelectList<Enums.Budget>()"></select>
+                    </div>
+
+                    <div class="sec3">
+                        <label for="full-name">Time</label>
+                        <select asp-for="EstimateTime" class="backdrop-blur" asp-items="Html.GetEnumSelectList<Enums.EstimateTime>()"></select>
+
+                    </div>
+                </div>
+
+                <h1>Upload Photo</h1>
+
+                <div class="form-group row">
+                    <div class="col-sm-6">
+                        <label asp-for="Photo"></label>
+                        <input asp-for="Photo" class="form-input" required/>
+                    </div>
+                    <div style="width: 75%; border: 1px solid black" class="col-sm-6">
+                        <img class="imagePreview" style='height: 100%; width: 100%; object-fit: contain'>
+                    </div>
+                </div>
+
+
+
+                <div class="review-description">
+                    <!-- <h1>Mountain Expert</h1> -->
+                    <label>Description (optional)</label>
+                    <textarea asp-for="Description" class="backdrop-blur"
+                              placeholder="Write description here..." required></textarea>
+                    <div class="stars">
+                        <p>Rating :</p>
+                        <div class="rate">
+                            @{
+                                var count = 1;
+                                foreach (var rate in Model.Ratings)
+                                {
+                                    var lblFor = "start" + count;
+                                    var lblText = count + " start";
+                                    <input type="radio" id="@lblFor" asp-for="SelectedRate" value="@rate" />
+                                    <label for="@lblFor" title="text">@lblText</label>
+                                    count++;
+                                }
+                            }
+
+                        </div>
+                    </div>
+                </div>
+                <div style="margin-top:-40px" class="checkbox-container">
+                    <input asp-for="NeedExpert" class="checkbox">
+                    <label asp-for="NeedExpert">Include mountain expert</label>
+                </div>
+                <center>
+                    <button type="submit" class="text-center">Add Route</button>
+                </center>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- The Modal -->
+<div id="myModal" class="modal">
+    <!-- Modal content -->
+
+    <div class="modal-content">
+        <span class="close">&times;</span>
+
+        <div class="map-container">
+            <div class="left-container">
+                <p id="modelTitle">title</p>
+                <p>lat: <span id="modelLat"> </span></p>
+                <p>lng: <span id="modelLng"> </span></p>
+            </div>
+
+            <div class="right-container">
+                <button class="map-button" onclick="addStart()" id="start-button">
+                    Add as Start
+                </button>
+                <input type="text"
+                       name="latitude"
+                       placeholder="Add as Start"
+                       class="backdrop-blur"
+                       style="display: none"
+                       id="map-start" />
+
+                <button class="map-button" onclick="addEnd()" id="end-button">
+                    Add as Finish
+                </button>
+                <input type="text"
+                       name="latitude"
+                       placeholder="Add as Finish"
+                       class="backdrop-blur"
+                       id="map-end"
+                       style="display: none" />
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts{
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/map.js"></script>
+    <script src="~/js/script.js"></script>
+    <script src="~/js/review.js"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCLIff_I2Tc78JZDy1tMVIyU_0prbBj4nY&libraries=places&callback=initMap"
+            async></script>
+
+
+    <script>
+
+
+        $('#Latitude').change(function () {
+            alert('test');
+        });
+    </script>
+}
+

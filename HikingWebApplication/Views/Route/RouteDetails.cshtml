@@ -1,0 +1,176 @@
+﻿@model RouteDetailsViewModel
+@{
+    ViewData["Title"] = "User Profile";
+}
+
+@section Heads{
+    <link rel="stylesheet" href="~/css/slick.css">
+    <link rel="stylesheet" href="~/css/book.css">
+
+}
+
+<div class="booking-container">
+    <partial name="_LoginPartial" model="Model.SelectedRoute.CreatedBy" />
+
+    <div class="promotional-paragraphs">
+        <!--Paragraphs start-->
+        <h2 style="color:white">@Model.SelectedRoute.Title</h2>
+        <h5 style="color:yellow">@Model.SelectedRoute.Place</h5>
+        <p>
+            @Model.SelectedRoute.Description
+        </p>
+        <br>
+
+    </div><!---Paragraphs end--->
+
+    <div class="suggested-hikes">
+        <!------suggested hikes start-->
+        <div class="heading-and-controls">
+            <h1>Suggested Hikes</h1>
+            <div class="slider-controls">
+                <a class="prev-1"><img src='~/images/arrow_left_icon.svg' alt='Arrow Left'></a>
+                <a class="next-1"><img src='~/images/arrow_right_icon.svg' alt='Arrow Right'></a>
+            </div>
+        </div>
+        <!---First Card Carousel Start-->
+        <div class="slick-carousel-1">
+            <!-- Inside the containing div, add one div for each slide -->
+
+            @{ foreach (var route in Model.AllRoutes)
+                {
+                    var imagePath = "/RoutePhotos/" + route.PhotoPath;
+                    <a asp-action="RouteDetails" asp-controller="Route" asp-route-id="@route.Id">
+                        <div class="card backdrop-blur">
+
+                            <div class="card-photo">
+
+                                <img src="@imagePath" alt="Onami Ike Crater Lake" asp-append-version="true" style="width:370px;height:240px;object-fit:cover">
+                                @if (route.NeedExpert)
+                                {
+                                    <img src="~/images/mountain_expert_tag.svg" alt="Mountain Expert Tag" class="mountain-expert-tag">
+
+                                }
+
+                            </div>
+
+                            <div class="card-description">
+
+                                <h1>@route.Title</h1>
+                                <p class="description">@route.Place</p>
+                                <p class="description">@route.Place</p>
+                                <small class="route-details">Length: @route.Distance km</small> |
+                                <small class="route-details">Est. @Enums.GetDisplayName(@route.EstimateTime) h</small> |
+                                <small class="route-details">Evelation: @route.Elevation m</small> |
+                                <small class="route-details">Budget: $ @Enums.GetDisplayName(@route.Budget)</small> |
+                                <small class="route-details">Lat: @route.Latitude   Lng: @route.Longitude </small>
+                                <div class="rating-level">
+                                    <div class="stars">
+                                        @{
+                                            var count = 1;
+                                            while (route.SelectedRate >= count)
+                                            {
+                                                <img src="~/images/star_yellow.svg" alt="Yellow Star">
+                                                count++;
+                                            }
+                                        }
+                                    </div>
+                                    <p class="intermediate-tag">@route.DificultyLevel</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </a>
+                }
+            }
+
+
+
+
+        </div><!----First Card Carousel End-->
+    </div><!----Suggested Hikes End-->
+
+
+    <div class="other-hiking-tours">
+        <!----Other Hing tours start-->
+        <div class="heading-and-controls">
+            <h1>Other Hiking Tours</h1>
+            <div class="slider-controls">
+                <a class="prev-2"><img src='~/images/arrow_left_icon.svg' alt='Arrow Left'></a>
+                <a class="next-2"><img src='~/images/arrow_right_icon.svg' alt='Arrow Right'></a>
+
+            </div>
+        </div>
+        <div class="slick-carousel-2">
+            @{ foreach (var route in Model.AllRoutes)
+                {
+                    var imagePath = "/RoutePhotos/" + route.PhotoPath;
+                    <a asp-action="RouteDetails" asp-controller="Route" asp-route-id="@route.Id">
+                        <div class="card backdrop-blur">
+
+                            <div class="card-photo">
+
+                                <img src="@imagePath" alt="Onami Ike Crater Lake" asp-append-version="true" style="width:370px;height:240px;object-fit:cover">
+                                @if (route.NeedExpert)
+                                {
+                                    <img src="~/images/mountain_expert_tag.svg" alt="Mountain Expert Tag" class="mountain-expert-tag">
+
+                                }
+
+                            </div>
+
+                            <div class="card-description">
+
+                                <h1>@route.Title</h1>
+                                <p class="description">@route.Place</p>
+                                <small class="route-details">Length: @route.Distance km</small> |
+                                <small class="route-details">Est. @Enums.GetDisplayName(@route.EstimateTime) h</small> |
+                                <small class="route-details">Evelation: @route.Elevation m</small> |
+                                <small class="route-details">Budget: $ @Enums.GetDisplayName(@route.Budget)</small> |
+                                <small class="route-details">Lat: @route.Latitude   Lng: @route.Longitude </small>
+                                <div class="rating-level">
+                                    <div class="stars">
+                                        @{
+                                            var count = 1;
+                                            while (route.SelectedRate >= count)
+                                            {
+                                                <img src="~/images/star_yellow.svg" alt="Yellow Star">
+                                                count++;
+                                            }
+                                        }
+                                    </div>
+                                    <p class="intermediate-tag">@route.DificultyLevel</p>
+                                </div>
+                            </div>
+
+                        </div>
+                    </a>
+                }
+            }
+
+        </div><!-----Second card carousel end-->
+
+    </div><!----Other hiking tours end-->
+
+
+    <hr>
+    <div class="extra-photos">
+        <!---Start-->
+        <img src="~/images/booking_extra1.jpg" alt="Scenery">
+        <img src="~/images/booking_extra2.jpg" alt="Scenery">
+        <img src="~/images/booking_extra3.jpg" alt="Scenery">
+        <img src="~/images/booking_extra4.jpg" alt="Scenery">
+        <img src="~/images/bookking_extra5.jpg" alt="Scenery">
+
+    </div> <!---end-->
+
+
+
+    <a asp-action="Index" asp-controller="Home"><button class="book-button centered-button">Home</button></a>
+</div><!------Container End-->
+
+
+
+@section Scripts{
+    <script src="~/js/slick.min.js"></script>
+    <script src="~/js/book.js"></script>
+}

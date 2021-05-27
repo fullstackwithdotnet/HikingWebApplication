@@ -1,0 +1,160 @@
+﻿@model ProfileViewModel
+
+@{
+    ViewData["Title"] = "User Profile";
+}
+
+@section Heads{
+    <link rel="stylesheet" href="~/css/slick.css">
+    <link rel="stylesheet" href="~/css/user_profile.css">
+
+}
+<div class="user-profile-container">
+    <partial name="_LoginPartial" model="Model.User" />
+
+    <div class="user-profile-and-edit-section">
+        <!--edit and user profile start-->
+
+        <div class="user-profile-card-container">
+            <!--user profile card-->
+            <div class="user-profile-card-cover">
+
+            </div>
+            <div class="user-profile-card-info">
+                <div class="user-profile-pic">
+
+                </div>
+                <div class="user-details">
+                    <h1>@Model.User.FullName</h1>
+                    <p>@Model.User.State, @Model.User.Country</p>
+                </div>
+            </div>
+        </div><!----user profile card end-->
+
+
+        <div class="edit-profile-card-wrapper">
+            <!---edit start-->
+            <p class="edit-profile-sub">Edit Profile</p>
+            <div id="form-edit">
+                <div class="edit-profile-card backdrop-blur">
+
+                    <form asp-action="EditProfile" method="post" class="user-info-form">
+                        <label for="full-name">Full Name</label>
+                        <input asp-for="User.FullName" class="backdrop-blur">
+                        <label for="email">Email</label>
+                        <input asp-for="User.Email" class="backdrop-blur" readonly>
+                        <label for="phone-num">Phone Number</label>
+                        <input asp-for="User.PhoneNumber" placeholder="Phone Number" class="backdrop-blur">
+                        <label asp-for="Interests">Interests</label>
+                        <input asp-for="Interests" placeholder="Interests" class="backdrop-blur">
+                        <button type="submit">Change</button>
+
+                    </form>
+                </div>
+
+            </div>
+            <div id="myDIV">
+                <div class="edit-profile-card backdrop-blur">
+
+                    <form action="#" class="user-info-form">
+                        <label for="full-name">Full Name</label>
+                        <input type="text" name="full-name" id="full-name" placeholder="Full Name" class="backdrop-blur">
+                        <label for="email">Email</label>
+                        <input type="email" name="email" id="email" placeholder="Email" class="backdrop-blur">
+                        <label for="phone-num">Phone Number</label>
+                        <input type="tel" name="phone-num" id="phone-num" placeholder="Phone Number" class="backdrop-blur">
+
+                        <button type="button" onclick="myFunction()">OK</button>
+
+                    </form>
+
+                    <div action="#" class="user-interest-form">
+                        <label for="interest">Interests</label>
+                        <input type="text" name="interest" id="interest" placeholder="Interest" class="backdrop-blur">
+                        <input type="text" name="interest" id="interest" placeholder="Interest" class="backdrop-blur">
+                        <input type="text" name="interest" id="interest" placeholder="Interest" class="backdrop-blur">
+
+                    </div>
+                </div>
+            </div>
+
+
+        </div> <!--edit end-->
+
+    </div><!--edit and user profile end-->
+
+
+    <div class="my-trips-section">
+        <!--- my trips start-->
+        <div class="heading-and-controls">
+            <h1>My Trips</h1>
+            <div class="slider-controls">
+                <a class="prev"><img src='~/images/arrow_left_icon.svg' alt='Arrow Left'></a>
+                <a class="next"><img src='~/images/arrow_right_icon.svg' alt='Arrow Right'></a>
+
+            </div>
+        </div>
+
+        <div class="slick-carousel">
+            <!---card carousel start-->
+            <!-- Inside the containing div, add one div for each slide -->
+            <div>
+                <!-- add route -->
+                <div class="card backdrop-blur">
+                    <div class="route">
+                        <center>   <a asp-action="AddRoute" asp-controller="Route" class="add-route">Add a route</a></center>
+                    </div>
+                </div>
+            </div>
+
+            @foreach (var route in Model.Routes)
+            {
+                var imagePath = "/RoutePhotos/" + route.PhotoPath;
+
+                <a asp-action="RouteDetails" asp-controller="Route" asp-route-id="@route.Id">
+                    <div class="card backdrop-blur">
+                        <div class="card-photo">
+                            <img src="@imagePath" alt="Onami Ike Crater Lake" asp-append-version="true" style="width:370px;height:240px;object-fit:cover">
+                        </div>
+                        <div class="card-description">
+                            <h1>@route.Title</h1>
+                            <p class="description">@route.Place</p>
+                            <small class="route-details">Length: @route.Distance km</small> |
+                            <small class="route-details">Est. @Enums.GetDisplayName(@route.EstimateTime) h</small> |
+                            <small class="route-details">Evelation: @route.Elevation m</small> |
+                            <small class="route-details">Budget: $ @Enums.GetDisplayName(@route.Budget)</small> |
+                            <small class="route-details">Lat: @route.Latitude   Lng: @route.Longitude </small>
+                            <div class="rating-level">
+                                <div class="stars">
+                                    @{
+                                        var count = 1;
+                                        while (route.SelectedRate >= count)
+                                        {
+                                            <img src="~/images/star_yellow.svg" alt="Yellow Star">
+                                            count++;
+                                        }
+                                    }
+                                </div>
+                                <p class="intermediate-tag">@route.DificultyLevel</p>
+                            </div>
+                        </div>
+
+                    </div>
+                </a>
+
+            }
+
+
+
+        </div><!--card carousel end-->
+
+    </div><!----my trips end-->
+</div>
+
+
+
+@section Scripts{
+    <script src="~/js/slick.min.js"></script>
+    <script src="~/js/user_profile.js"></script>
+
+}

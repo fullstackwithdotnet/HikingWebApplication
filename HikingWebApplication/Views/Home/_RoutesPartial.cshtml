@@ -1,0 +1,79 @@
+﻿@model IEnumerable<RouteModel>
+
+@{
+    int counter = 0;
+}
+<section class="wrapper">
+
+    <div class="row">
+        <div class="col-md-4 col-lg-3">
+            @{
+                foreach (var route in Model)
+                {
+                    if (counter != 0 && counter % 1 == 0)
+                    {
+                    @:</div>
+                    @:<div class="col-md-4 col-lg-3">
+                    }
+
+                    var imagePath = "/RoutePhotos/" + route.PhotoPath;
+
+                    <div class="card text-white card-has-bg click-col" style="background-image:url('@imagePath');">
+
+                        <img class="card-img" src="@imagePath" alt="@route.Title">
+
+                        <div class="card-img-overlay d-flex flex-column">
+                            <div class="card-body">
+
+                                <h4 class="card-title mt-0 "><a class="text-white" asp-action="RouteDetails" asp-controller="Route" asp-route-id="@route.Id">@route.Title</a></h4>
+
+                                <small class="card-meta mb-2">@route.Place</small>
+                                <br />
+                                <small><i class="far fa-clock"></i> Est : @Enums.GetDisplayName(@route.EstimateTime)</small>
+                                <br />
+                                <small><i class="far fa-clock"></i> Distance : @route.Distance km</small>
+                                <br />
+                                <small><i class="far fa-clock"></i> Budget : $ @Enums.GetDisplayName(@route.Budget)</small>
+                                <br />
+                                <small><i class="far fa-clock"></i> Elevation : @route.Elevation m</small>
+                                <br />
+                                <small><i class="far fa-clock"></i> Lantitude : @route.Latitude</small>
+                                <br />
+                                <small><i class="far fa-clock"></i> Longitude : @route.Longitude</small>
+                                <div class="rating-level">
+                                    <div class="stars">
+                                        @{
+                                            var count = 1;
+                                            while (route.SelectedRate >= count)
+                                            {
+                                                <img src="~/images/star_yellow.svg" alt="Yellow Star">
+                                                count++;
+                                            }
+                                        }
+                                    </div>
+                                    <p class="intermediate-tag">@route.DificultyLevel</p>
+                                </div>
+                            </div>
+
+                            <div class="card-footer">
+                                <div class="media">
+                                    <img class="mr-3 rounded-circle" src="https://cdn0.iconfinder.com/data/icons/user-pictures/100/male-512.png" alt="Generic placeholder image" style="max-width:50px">
+                                    <div class="media-body">
+                                        <h6 class="my-0 text-white d-block">@route.CreatedBy.FullName</h6>
+                                        <small>@route.CreatedBy.State, @route.CreatedBy.Country</small><br />
+                                        <small>Published on @route.CreatedDate.ToShortDateString()</small>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    counter++;
+                }
+            }
+
+        </div>
+    </div>
+
+</section>
