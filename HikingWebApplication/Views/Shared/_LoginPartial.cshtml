@@ -3,29 +3,30 @@
 @inject SignInManager<ApplicationUser> SignInManager
 @inject UserManager<ApplicationUser> UserManager
 
-@if (SignInManager.IsSignedIn(User))
-{
-
-    @*<a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>*@
-
-    @*<li class="nav-item">
-            <form class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                <button type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-            </form>
-        </li>*@
 <nav class="decrease-height-responsive">
+
     <div class="nav-logo">
         <a asp-action="Index" asp-controller="Home">Logo</a>
     </div>
-    <div class="nav-links d-flex">
-        <a style="margin-right:30px; color:yellow" asp-action="AddRoute" asp-controller="Route" class="hide-link-responsive">Add Route</a>
-        <a style="margin-right:30px; color:yellow" asp-action="EditProfile" asp-controller="Home" class="hide-link-responsive">Edit Profile</a>
-        <a href="#" class="hide-link-responsive">Hello @User.Identity.Name!</a>
-        <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button style="padding:0;margin-bottom:2px" type="submit" class="nav-link btn btn-link">Logout</button>
-        </form>
-    </div>
-    
+    @if (SignInManager.IsSignedIn(User))
+    {
+        <div class="nav-links d-flex">
+            <a style="margin-right:30px; color:yellow" asp-action="AddRoute" asp-controller="Route" class="hide-link-responsive">Add Route</a>
+            <a style="margin-right:30px; color:yellow" asp-action="EditProfile" asp-controller="Home" class="hide-link-responsive">Edit Profile</a>
+            <a href="#" class="hide-link-responsive">Hello @User.Identity.Name!</a>
+            <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
+                <button style="padding:0;margin-bottom:2px" type="submit" class="nav-link btn btn-link">Logout</button>
+            </form>
+        </div>
+    }
+    else
+    {
+        <div class="nav-links d-flex">
+            <a style="margin-right:30px; color:yellow" asp-area="Identity" asp-page="/Account/Login" class="hide-link-responsive">Login/Register</a>
+        </div>
+
+    }
+
     <a href="javascript:void(0);"
        class="icon"
        onclick="menuToggle()"
@@ -33,11 +34,4 @@
         <i class="fa fa-bars fa-2x"></i>
     </a>
 </nav>
-}
-else
-{
-   
-    <a asp-area="Identity" asp-page="/Account/Login">   <button class="login-register-button">Login/Register</button></a>
-
-}
 
